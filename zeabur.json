@@ -9,4 +9,3 @@
     "command": "cd apps/app && pnpm start"
   }
 }
-

@@ -6,4 +6,5 @@ export { MatchResultCard } from "./MatchResultCard";
 export { MatchResultList } from "./MatchResultList";
 export { ErrorAlert } from "./ErrorAlert";
 export { EmptyState } from "./EmptyState";
+export { ImageCropper } from "./ImageCropper";
 

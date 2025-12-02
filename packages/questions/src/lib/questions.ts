@@ -3,10 +3,10 @@
  * 提供题库数据的加载和访问功能
  */
 
-import type { Question } from "./types";
+import type { Question } from './types.js';
 
 // 静态导入题库数据（用于服务端）
-import questionsData from "../../data/questions.json";
+import questionsData from '../../data/questions.json' with { type: 'json' };
 
 /**
  * 获取所有题目

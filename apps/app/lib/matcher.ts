@@ -2,13 +2,13 @@
  * 题库匹配算法
  */
 
-import type { Question, MatchResult } from "@exam-helper/questions";
+import type { Question, MatchResult } from '@exam-helper/questions';
 import {
   preprocessText,
   extractKeywords,
   correctOCRErrors,
   isNoiseLine,
-} from "./textProcessor";
+} from './textProcessor';
 
 /**
  * 计算 Levenshtein 距离
@@ -76,90 +76,82 @@ function calculateSimilarity(text1: string, text2: string): number {
     return 0;
   }
 
+  // 完全匹配
+  if (processed1 === processed2) {
+    return 1;
+  }
+
+  // 包含关系检查（OCR 识别的文本可能包含题库题目，或反过来）
+  let containBonus = 0;
+  if (processed1.includes(processed2)) {
+    // 识别文本包含题库题目
+    containBonus = 0.3 * (processed2.length / processed1.length);
+  } else if (processed2.includes(processed1)) {
+    // 题库题目包含识别文本
+    containBonus = 0.3 * (processed1.length / processed2.length);
+  }
+
+  // Levenshtein 编辑距离相似度
   const distance = levenshteinDistance(processed1, processed2);
   const maxLength = Math.max(processed1.length, processed2.length);
   const editSimilarity = 1 - distance / maxLength;
 
+  // 关键词相似度
   const keywordSimilarity = calculateKeywordSimilarity(text1, text2);
 
-  return editSimilarity * 0.4 + keywordSimilarity * 0.6;
+  // 综合计算，增加包含关系加成
+  const baseSimilarity = editSimilarity * 0.5 + keywordSimilarity * 0.5;
+
+  return Math.min(1, baseSimilarity + containBonus);
 }
 
 /**
- * 从识别文本中提取题目内容
+ * 从识别文本中提取题目内容（不包含选项）
  */
 function extractQuestionText(recognizedText: string): string {
-  const lines = recognizedText.split("\n").filter((line) => line.trim());
-  let questionText = "";
-  let foundQuestionStart = false;
-  const collectedLines: string[] = [];
+  // 先用正则移除所有选项内容（包括行内选项）
+  let text = recognizedText
+    // 移除选项行（以 ○A、●B、A.、A、等开头）
+    .replace(/[○●]?[A-D][、.．:：][^\n]*/g, '')
+    // 移除题目序号
+    .replace(/^\d+[、.．]\s*/gm, '')
+    // 移除题型标识
+    .replace(/(单选题|多选题|判断题)/g, '');
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
+  const lines = text.split('\n').filter((line) => line.trim());
+  const questionLines: string[] = [];
 
-    if (/^\d+$/.test(line)) continue;
+  for (const line of lines) {
+    const trimmed = line.trim();
 
-    if (
-      line === "判断题" ||
-      line === "单选题" ||
-      line === "多选题" ||
-      line.includes("判断题") ||
-      line.includes("单选题") ||
-      line.includes("多选题")
-    ) {
-      continue;
-    }
+    // 跳过空行和纯数字
+    if (!trimmed || /^\d+$/.test(trimmed)) continue;
 
-    if (/^[○●]?[A-D][:：]/.test(line)) {
-      if (foundQuestionStart) break;
-      continue;
-    }
+    // 跳过噪声行
+    if (isNoiseLine(trimmed)) continue;
 
-    if (!foundQuestionStart) {
-      if (/^[?？]?\d*[、.]/.test(line) || /^[?？]/.test(line)) {
-        foundQuestionStart = true;
-        questionText = line
-          .replace(/^[?？]?\d*[、.]\s*/, "")
-          .replace(/^[?？]\s*/, "");
-        collectedLines.push(questionText);
-      } else if (line.length > 5 && !/^[学法减分●○]+$/.test(line)) {
-        foundQuestionStart = true;
-        questionText = line;
-        collectedLines.push(questionText);
-      }
-    } else {
-      if (/^[○●]?[A-D][:：]/.test(line)) break;
-      if (isNoiseLine(line)) break;
+    // 跳过学法减分等无关内容
+    if (/^[学法减分●○]+$/.test(trimmed)) continue;
 
-      collectedLines.push(line);
-      questionText += line;
-    }
+    // 如果遇到选项标识，停止收集
+    if (/^[○●]?[A-D][、.．:：]/.test(trimmed)) break;
+
+    questionLines.push(trimmed);
   }
 
+  let questionText = questionLines.join('');
+
+  // 如果没有提取到内容，尝试从原文本中提取
   if (!questionText) {
-    const filteredText = recognizedText
-      .split("\n")
-      .filter((line) => {
-        const trimmed = line.trim();
-        return (
-          trimmed &&
-          !/^\d+$/.test(trimmed) &&
-          trimmed !== "判断题" &&
-          trimmed !== "单选题" &&
-          trimmed !== "多选题" &&
-          !/^[○●]?[A-D][:：]/.test(trimmed) &&
-          !/^[学法减分●○]+$/.test(trimmed)
-        );
-      })
-      .join("");
-    questionText = filteredText
-      .split("\n")
-      .filter((line) => !isNoiseLine(line))
-      .join("");
-  } else {
-    questionText = collectedLines
-      .filter((line) => !isNoiseLine(line))
-      .join("");
+    // 尝试提取到第一个选项之前的内容
+    const match = recognizedText.match(/^([\s\S]*?)(?:[○●]?[A-D][、.．:：]|$)/);
+    if (match && match[1]) {
+      questionText = match[1]
+        .replace(/^\d+[、.．]\s*/gm, '')
+        .replace(/(单选题|多选题|判断题)/g, '')
+        .replace(/\n/g, '')
+        .trim();
+    }
   }
 
   return correctOCRErrors(questionText);
@@ -174,12 +166,12 @@ export function findBestMatches(
   threshold: number = 0.25
 ): MatchResult[] {
   if (questionBank.length === 0) {
-    console.error("题库为空，无法匹配");
+    console.error('题库为空，无法匹配');
     return [];
   }
 
   const questionText = extractQuestionText(recognizedText);
-  console.log("提取的题目文本:", questionText);
+  console.log('提取的题目文本:', questionText);
 
   const matches: MatchResult[] = [];
 
@@ -205,4 +197,3 @@ export function findBestMatches(
   console.log(`匹配完成，找到 ${result.length} 道相似题目`);
   return result;
 }
-

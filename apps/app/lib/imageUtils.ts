@@ -16,11 +16,11 @@ export function compressImage(
 
     img.onload = () => {
       try {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
         if (!ctx) {
-          reject(new Error("无法创建 Canvas 上下文"));
+          reject(new Error('无法创建 Canvas 上下文'));
           return;
         }
 
@@ -36,15 +36,15 @@ export function compressImage(
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
 
-        const compressed = canvas.toDataURL("image/jpeg", quality);
-        resolve(compressed.split(",")[1]);
+        const compressed = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressed.split(',')[1]);
       } catch (error) {
         reject(error);
       }
     };
 
     img.onerror = () => {
-      reject(new Error("图片加载失败"));
+      reject(new Error('图片加载失败'));
     };
 
     img.src = imageData;
@@ -60,15 +60,15 @@ export function fileToDataURL(file: File): Promise<string> {
 
     reader.onload = (e) => {
       const result = e.target?.result;
-      if (typeof result === "string") {
+      if (typeof result === 'string') {
         resolve(result);
       } else {
-        reject(new Error("文件读取失败"));
+        reject(new Error('文件读取失败'));
       }
     };
 
     reader.onerror = () => {
-      reject(new Error("文件读取失败"));
+      reject(new Error('文件读取失败'));
     };
 
     reader.readAsDataURL(file);
@@ -79,6 +79,68 @@ export function fileToDataURL(file: File): Promise<string> {
  * 验证文件是否为图片
  */
 export function isImageFile(file: File): boolean {
-  return file.type.startsWith("image/");
+  return file.type.startsWith('image/');
 }
 
+/**
+ * 裁剪区域类型
+ */
+export interface CropArea {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * 裁剪图片
+ */
+export function cropImage(
+  imageData: string,
+  cropArea: CropArea
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          reject(new Error('无法创建 Canvas 上下文'));
+          return;
+        }
+
+        // 设置 canvas 尺寸为裁剪区域大小
+        canvas.width = cropArea.width;
+        canvas.height = cropArea.height;
+
+        // 绘制裁剪区域
+        ctx.drawImage(
+          img,
+          cropArea.x,
+          cropArea.y,
+          cropArea.width,
+          cropArea.height,
+          0,
+          0,
+          cropArea.width,
+          cropArea.height
+        );
+
+        // 导出为 data URL
+        const croppedData = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(croppedData);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    img.onerror = () => {
+      reject(new Error('图片加载失败'));
+    };
+
+    img.src = imageData;
+  });
+}

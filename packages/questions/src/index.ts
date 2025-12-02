@@ -6,7 +6,7 @@ export type {
   TokenResponse,
   AppState,
   APIError,
-} from "./lib/types";
+} from './lib/types.js';
 
 // 导出函数
 export {
@@ -14,4 +14,4 @@ export {
   getQuestionById,
   getQuestionCount,
   searchQuestions,
-} from "./lib/questions";
+} from './lib/questions.js';

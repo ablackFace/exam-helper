@@ -38,7 +38,7 @@ async function getAccessToken(): Promise<string> {
   if (data.access_token) {
     cachedToken = data.access_token;
     tokenExpiry = Date.now() + (data.expires_in || 2592000) * 1000;
-    return cachedToken;
+    return data.access_token;
   } else {
     throw new Error(data.error_description || '获取 Token 失败');
   }

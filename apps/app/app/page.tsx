@@ -9,6 +9,7 @@ import {
   MatchResultList,
   ErrorAlert,
   EmptyState,
+  ImageCropper,
 } from "../components";
 
 export default function HomePage() {
@@ -19,7 +20,10 @@ export default function HomePage() {
     matchResults,
     error,
     isQuestionBankLoaded,
+    pendingImageUrl,
     handleImageSelect,
+    handleCropConfirm,
+    handleCropCancel,
     clearError,
   } = useExamHelper();
 
@@ -51,6 +55,15 @@ export default function HomePage() {
       <LoadingOverlay isVisible={isLoading} text={loadingText} />
 
       <ErrorAlert message={error} onClose={clearError} />
+
+      {/* 图片裁剪界面 */}
+      {pendingImageUrl && (
+        <ImageCropper
+          imageUrl={pendingImageUrl}
+          onConfirm={handleCropConfirm}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }

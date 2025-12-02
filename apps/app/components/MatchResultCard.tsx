@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Image from "next/image";
-import type { MatchResult } from "@exam-helper/questions";
-import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { useState } from 'react';
+import Image from 'next/image';
+import type { MatchResult } from '@exam-helper/questions';
+import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 interface MatchResultCardProps {
   result: MatchResult;
@@ -22,14 +22,18 @@ export function MatchResultCard({
   const similarityPercent = (result.similarity * 100).toFixed(1);
 
   const getSimilarityColor = () => {
-    if (result.similarity >= 0.8) return "bg-emerald-500";
-    if (result.similarity >= 0.6) return "bg-amber-500";
-    return "bg-gray-400";
+    if (result.similarity >= 0.8) return 'bg-emerald-500';
+    if (result.similarity >= 0.6) return 'bg-amber-500';
+    return 'bg-gray-400';
   };
 
   const isCorrectOption = (option: string) => {
-    const optionLetter = option.trim().charAt(0);
-    return result.answer && optionLetter === result.answer.trim();
+    const optionLetter = option.trim().charAt(0).toUpperCase();
+    // 支持多选题（answer 可能是 "ABC" 或 "A,B,C" 格式）
+    const answerStr = (result.answer || '')
+      .toUpperCase()
+      .replace(/[,，\s]/g, '');
+    return answerStr.includes(optionLetter);
   };
 
   return (
@@ -37,7 +41,7 @@ export function MatchResultCard({
       className={`
         bg-white rounded-2xl shadow-lg overflow-hidden
         transition-all duration-300
-        ${isBestMatch ? "ring-2 ring-emerald-500 shadow-emerald-100" : ""}
+        ${isBestMatch ? 'ring-2 ring-emerald-500 shadow-emerald-100' : ''}
         animate-slide-up
       `}
       style={{ animationDelay: `${rank * 50}ms` }}
@@ -47,7 +51,11 @@ export function MatchResultCard({
           <span
             className={`
             inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold
-            ${isBestMatch ? "bg-emerald-500 text-white" : "bg-violet-100 text-violet-600"}
+            ${
+              isBestMatch
+                ? 'bg-emerald-500 text-white'
+                : 'bg-violet-100 text-violet-600'
+            }
           `}
           >
             {rank}
@@ -102,15 +110,15 @@ export function MatchResultCard({
               选项
             </div>
             <div className="space-y-2">
-              {result.options.map((option, index) => (
+              {result.options.map((option: string, index: number) => (
                 <div
                   key={index}
                   className={`
                     px-3 py-2.5 rounded-xl text-sm transition-colors
                     ${
                       isCorrectOption(option)
-                        ? "bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 text-emerald-800 font-medium"
-                        : "bg-gray-50 text-gray-600 border-l-4 border-transparent"
+                        ? 'bg-gradient-to-r from-emerald-50 to-green-50 border-l-4 border-emerald-500 text-emerald-800 font-medium'
+                        : 'bg-gray-50 text-gray-600 border-l-4 border-transparent'
                     }
                   `}
                 >
@@ -162,4 +170,3 @@ export function MatchResultCard({
     </div>
   );
 }
-

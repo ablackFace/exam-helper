@@ -13,18 +13,20 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@exam-helper/questions": ["../../packages/questions/src/index.ts"],
-      "@exam-helper/crawl": ["../../packages/crawl/src/index.ts"]
+      "@exam-helper/questions": ["../../packages/questions/src/index.ts"]
     },
-    "outDir": "dist",
-    "rootDir": "."
+    "outDir": "dist"
   },
   "include": [
     "app/**/*.ts",
@@ -37,7 +39,8 @@
     "lib/**/*.ts",
     "../../apps/app/.next/types/**/*.ts",
     "../../dist/apps/app/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "index.d.ts"
   ],
   "exclude": [
     "out-tsc",
@@ -48,10 +51,5 @@
     "app/**/*.spec.ts",
     "app/**/*.test.ts",
     ".next"
-  ],
-  "references": [
-    {
-      "path": "../../packages/questions"
-    }
   ]
 }

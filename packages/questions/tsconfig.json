@@ -1,10 +1,13 @@
 {
   "extends": "../../tsconfig.base.json",
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    }
-  ]
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "../../dist/out-tsc/questions"
+  },
+  "include": ["src/**/*.ts", "data/**/*.json"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

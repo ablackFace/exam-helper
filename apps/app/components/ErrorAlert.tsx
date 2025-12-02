@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { XMarkIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid";
+import { useEffect } from 'react';
+import { XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 
 interface ErrorAlertProps {
   message: string | null;
@@ -15,10 +15,10 @@ export function ErrorAlert({
   autoHideDuration = 5000,
 }: ErrorAlertProps) {
   useEffect(() => {
-    if (message && autoHideDuration > 0) {
-      const timer = setTimeout(onClose, autoHideDuration);
-      return () => clearTimeout(timer);
-    }
+    if (!message || autoHideDuration <= 0) return;
+
+    const timer = setTimeout(onClose, autoHideDuration);
+    return () => clearTimeout(timer);
   }, [message, autoHideDuration, onClose]);
 
   if (!message) return null;
@@ -69,4 +69,3 @@ export function ErrorAlert({
     </div>
   );
 }
-

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.zeabur.app/config.json",
+  "build": {
+    "command": "cd ../.. && pnpm install && pnpm build",
+    "output": ".next"
+  },
+  "start": {
+    "command": "pnpm start"
+  }
+}
+

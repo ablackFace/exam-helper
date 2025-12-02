@@ -1,0 +1,11 @@
+{
+  "name": "12123学法减分考试神器",
+  "short_name": "学法减分",
+  "description": "拍照识别题目，快速获取答案",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait",
+  "icons": []
+}

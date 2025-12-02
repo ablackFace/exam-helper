@@ -1,0 +1,17 @@
+{
+  "name": "@exam-helper/questions",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./data": {
+      "import": "./data/questions.json",
+      "require": "./data/questions.json"
+    }
+  }
+}

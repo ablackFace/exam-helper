@@ -1,0 +1,52 @@
+{
+  "name": "@exam-helper/source",
+  "version": "0.0.0",
+  "license": "MIT",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@swc/core",
+      "nx",
+      "sharp",
+      "@parcel/watcher"
+    ]
+  },
+  "scripts": {
+    "dev": "nx run @exam-helper/app:dev",
+    "build": "nx run @exam-helper/app:build",
+    "start": "nx run @exam-helper/app:start",
+    "parse": "npx tsx packages/crawl/src/lib/crawl.ts",
+    "lint": "nx run-many --target=lint"
+  },
+  "private": true,
+  "devDependencies": {
+    "@nx/js": "22.1.3",
+    "@nx/next": "^22.1.3",
+    "@nx/react": "^22.1.3",
+    "@swc-node/register": "~1.9.1",
+    "@swc/cli": "~0.6.0",
+    "@swc/core": "~1.5.7",
+    "@swc/helpers": "~0.5.11",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "20.19.9",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "nx": "22.1.3",
+    "prettier": "^2.6.2",
+    "tslib": "^2.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@heroicons/react": "^2.2.0",
+    "autoprefixer": "^10.4.22",
+    "cheerio": "^1.1.2",
+    "lightningcss-win32-x64-msvc": "^1.30.2",
+    "next": "~16.0.1",
+    "postcss": "^8.5.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.1.17"
+  }
+}

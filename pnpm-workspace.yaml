@@ -1,0 +1,7 @@
+packages:
+  - packages/*
+  - apps/*
+
+autoInstallPeers: true
+
+onlyBuiltDependencies: '[''esbuild'', ''@swc/core'', ''nx'', ''sharp'', ''@parcel/watcher'']'

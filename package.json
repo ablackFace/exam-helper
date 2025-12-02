@@ -2,6 +2,7 @@
   "name": "@exam-helper/source",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@10.12.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

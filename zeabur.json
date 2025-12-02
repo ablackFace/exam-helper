@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.zeabur.app/config.json",
   "build": {
-    "type": "nextjs"
+    "type": "dockerfile"
   }
 }

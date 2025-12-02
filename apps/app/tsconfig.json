@@ -51,5 +51,10 @@
     "app/**/*.spec.ts",
     "app/**/*.test.ts",
     ".next"
+  ],
+  "references": [
+    {
+      "path": "../../packages/questions"
+    }
   ]
 }

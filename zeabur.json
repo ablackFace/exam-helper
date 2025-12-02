@@ -1,11 +1,6 @@
 {
   "$schema": "https://json-schema.zeabur.app/config.json",
   "build": {
-    "root_directory": "apps/app",
-    "command": "pnpm install && pnpm build",
-    "output": "apps/app/.next"
-  },
-  "start": {
-    "command": "cd apps/app && pnpm start"
+    "type": "nextjs"
   }
 }
